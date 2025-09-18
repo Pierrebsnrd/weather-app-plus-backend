@@ -1,20 +1,53 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const connectDB = require('./config/database');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Routes
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
+const citiesRouter = require('./routes/cities');
+const weatherRouter = require('./routes/weather');
 
-var app = express();
+// Connexion à MongoDB
+connectDB();
+
+const app = express();
+
+// Middlewares
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://your-frontend-domain.com']
+    : ['http://localhost:3001', 'http://127.0.0.1:3001'],
+  credentials: true
+}));
 
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/cities', citiesRouter);
+app.use('/api/weather', weatherRouter);
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route non trouvée' });
+});
+
+// Gestion des erreurs globales
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Erreur interne du serveur' });
+});
 
 module.exports = app;
