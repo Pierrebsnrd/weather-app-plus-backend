@@ -7,8 +7,6 @@ const cors = require('cors');
 const connectDB = require('./config/database');
 
 // Routes
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const citiesRouter = require('./routes/cities');
 const weatherRouter = require('./routes/weather');
@@ -33,8 +31,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/cities', citiesRouter);
 app.use('/api/weather', weatherRouter);
