@@ -19,7 +19,7 @@ const app = express();
 // Middlewares
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://weather-app-plus-frontend.vercel.app/']
+    ? ['https://weather-app-plus-frontend.vercel.app']
     : ['http://localhost:3001', 'http://127.0.0.1:3001'],
   credentials: true
 }));
